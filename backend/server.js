@@ -1,10 +1,14 @@
-import express from "express";
-import http from "http";
-import { Server } from "socket.io";
-import cors from "cors";
-import dotenv from "dotenv";
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
+const dotenv = require("dotenv");
+
+const { PORT, FRONTEND_URL } = require("./config/dotenv.config");
+const dbConnect = require("./config/dbConnect");
 
 dotenv.config();
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -14,10 +18,11 @@ const io = new Server(server, {
   cors: { origin: "*" },
 });
 
-
 app.get("/", (req, res) => {
   res.send("HackathonBuddy backend running ✅");
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () => {
+  dbConnect();
+  console.log(`🚀 Server running on port ${PORT}`);
+});
